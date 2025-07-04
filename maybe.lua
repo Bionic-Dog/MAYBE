@@ -1,4 +1,4 @@
---to think they took it down literally the day i was gonna give them a ton of money lol
+--to think they took it down literally the day i was about to donate a shitton of money to the ko-fi dude :sob:
 
 maxArrow = 2.5e4
 
@@ -22,24 +22,9 @@ end
 
 
 local edited_default_colours = false
--- from cryptid.lua
 SMODS.current_mod.optional_features = {
 	retrigger_joker = true,
 	post_trigger = true,
-	--[[cardareas = {
-		unscored = true,
-		deck = true,
-	},]]
-	-- Here are some other ones Steamodded has
-	-- Cryptid doesn't use them YET, but these should be uncommented if Cryptid uses them
-	--[[
-	quantum_enhancements = true,
-	-- These ones add new card areas that Steamodded will calculate through
-	-- Might already be useful for sticker calc
-	cardareas = {
-		discard = true,
-	}
-	]]
 }
 
 --COMMON STRINGS
@@ -188,65 +173,7 @@ function SMODS.create_mod_badges(obj, badges)
 			},
 		}
 	end
-	if obj then
-		--[[
-		for k, v in pairs(jen_modifierbadges) do
-			if obj[k] then
-				local scale_fac = {}
-				local scale_fac_len = 1
-				if v.text then
-					for i = 1, #v.text do
-						local calced_scale = calculate_scalefactor(v.text[i])
-						scale_fac[i] = calced_scale
-						scale_fac_len = math.min(scale_fac_len, calced_scale)
-					end
-				end
-				local ct = {}
-				for i = 1, #v.text do
-					ct[i] = {
-						string = v.text[i]
-					}
-				end
-				badges[#badges + 1] = {
-					n = G.UIT.R,
-					config = { align = "cm" },
-					nodes = {
-						{
-							n = G.UIT.R,
-							config = {
-								align = "cm",
-								colour = v and v.col or G.C.RED,
-								r = 0.1,
-								minw = 2/scale_fac_len,
-								minh = 0.36,
-								emboss = 0.05,
-								padding = 0.03 * 0.9,
-							},
-							nodes = {
-								{ n = G.UIT.B, config = { h = 0.1, w = 0.03 } },
-								{
-									n = G.UIT.O,
-									config = {
-										object = DynaText({
-											string = ct or "ERROR",
-											colours = { v and v.tcol or G.C.WHITE },
-											silent = true,
-											float = true,
-											shadow = true,
-											offset_y = -0.03,
-											spacing = 1,
-											scale = 0.33 * 0.9,
-										}),
-									},
-								},
-								{ n = G.UIT.B, config = { h = 0.1, w = 0.03 } },
-							},
-						},
-					},
-				}
-			end
-		end]]
-	end
+	
 end
 
 --https://gist.github.com/efrederickson/4080372
@@ -866,7 +793,6 @@ end
 
 
 local shaders = {
-	--MY NEW SHIT YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY
 	'forgotten',
 	'forgottenv2',
 	'investment',
