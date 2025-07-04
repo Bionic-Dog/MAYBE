@@ -24,6 +24,7 @@ end
 
 
 --mesa
+--[[
 SMODS.Joker {
 	key = 'mesa',
 	loc_txt = {
@@ -63,7 +64,7 @@ SMODS.Joker {
 			end
 		end
 	end
-}
+}]]
 
 SMODS.Joker {
 	key = 'gluttony',
