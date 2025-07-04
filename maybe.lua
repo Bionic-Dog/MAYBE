@@ -350,9 +350,6 @@ if not AurinkoAddons then
 	AurinkoAddons = {}
 end
 
-AllowStacking('Capsules')
-AllowDividing('Capsules')
-AllowMassUsing('Capsules')
 
 G.FUNCS.isomeganumenabled = function(e)
 	if Big and Big.arrow then
