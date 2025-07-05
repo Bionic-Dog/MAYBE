@@ -218,6 +218,18 @@ local robot_flavour = {
 	'GET EQUIPPED WITH: GIRL TRANSFORM',
 	'YOU GOT: MYSTIC SUMMIT',
 }
+--[[
+if G.jokers then
+					local additive = card.ability.extra.add
+					G.jokers:change_size_absolute(additive)
+					SMODS.add_card({set = 'Tarot', key = 'c_judgement', edition = 'e_negative'})
+					return {
+						message = robot_flavour[math.random(#robot_flavour)],
+						colour = G.C.EDITION,
+						card = context.other_card,
+            		}
+				end
+]]
 
 SMODS.Joker {
 	key = 'robotmaster',
@@ -247,10 +259,10 @@ SMODS.Joker {
 	--immutable = true,
 	atlas = 'mayrobotmaster',
 	calculate = function(self, card, context)
-		if context.end_of_round and context.individual then
-			if G.GAME.blind:get_type() == G.GAME.blind.boss then
-				if G.jokers then
-					local additive = card.ability.extra.add
+            
+            if context.end_of_round and not (context.individual or context.repetition or context.blueprint)
+            and G.GAME.blind.boss and not card.ability.extra.can_copy then
+                local additive = card.ability.extra.add
 					G.jokers:change_size_absolute(additive)
 					SMODS.add_card({set = 'Tarot', key = 'c_judgement', edition = 'e_negative'})
 					return {
@@ -258,10 +270,8 @@ SMODS.Joker {
 						colour = G.C.EDITION,
 						card = context.other_card,
             		}
-				end
-			end
-		end
-	end
+            end
+        end,
 }
 
 

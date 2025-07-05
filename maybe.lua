@@ -825,7 +825,7 @@ end
 
 --JOKER ATLASES
 local atlases = {
-	'mesa',
+	--'mesa',
 	'gluttony',
 	'guhadeen',
 	'yatta',
