@@ -42,12 +42,90 @@ SMODS.Atlas {
 	py = 34
 }
 
+
+
 May = {
 	config = {
 		texture_pack = 'default',
 		show_credits = true,
 		show_captions = true,
 		show_lore = true,
+		shop_size_buff = 3,
+		shop_voucher_count_buff = 2,
+		shop_booster_pack_count_buff = 2,
+		consumable_slot_count_buff = 18,
+		suit_leveling = {
+			Hearts = {
+				chips = 1,
+				mult = 5
+			},
+			Clubs = {
+				chips = 5,
+				mult = 1
+			},
+			Diamonds = {
+				chips = 2,
+				mult = 4
+			},
+			Spades = {
+				chips = 4,
+				mult = 2
+			}
+		},
+		rank_leveling = {
+			['2'] = {
+				chips = 13,
+				mult = 1
+			},
+			['3'] = {
+				chips = 12,
+				mult = 1
+			},
+			['4'] = {
+				chips = 11,
+				mult = 1
+			},
+			['5'] = {
+				chips = 10,
+				mult = 2
+			},
+			['6'] = {
+				chips = 9,
+				mult = 2
+			},
+			['7'] = {
+				chips = 8,
+				mult = 2
+			},
+			['8'] = {
+				chips = 7,
+				mult = 3
+			},
+			['9'] = {
+				chips = 6,
+				mult = 3
+			},
+			['10'] = {
+				chips = 5,
+				mult = 3
+			},
+			Jack = {
+				chips = 4,
+				mult = 4
+			},
+			Queen = {
+				chips = 3,
+				mult = 5
+			},
+			King = {
+				chips = 2,
+				mult = 6
+			},
+			Ace = {
+				chips = 25,
+				mult = 7
+			},
+		},
 	},
 }
 
@@ -241,6 +319,92 @@ function unroman(s)
     return ret
 end
 
+local function hsv(h, s, v)
+    if s <= 0 then return v,v,v end
+    h = h*6
+    local c = v*s
+    local x = (1-math.abs((h%2)-1))*c
+    local m,r,g,b = (v-c), 0, 0, 0
+    if h < 1 then
+        r, g, b = c, x, 0
+    elseif h < 2 then
+        r, g, b = x, c, 0
+    elseif h < 3 then
+        r, g, b = 0, c, x
+    elseif h < 4 then
+        r, g, b = 0, x, c
+    elseif h < 5 then
+        r, g, b = x, 0, c
+    else
+        r, g, b = c, 0, x
+    end
+    return r+m, g+m, b+m
+end
+
+function manage_level_colour(level, force)
+	local new_colour = G.C.WHITE
+	level = to_big(level)
+	if not G.C.HAND_LEVELS[number_format(level)] or force then 
+		if level >= to_big(1e300) ^ 16 then
+			new_colour = G.C.jen_RGB
+		elseif level >= to_big(1e200) ^ 8 then
+			new_colour = G.C.CRY_ASCENDANT
+		elseif level >= to_big(1e150) ^ 4 then
+			new_colour = G.C.CRY_VERDANT
+		elseif level >= to_big(1e110) ^ 2 then
+			new_colour = G.C.CRY_TWILIGHT
+		elseif level >= to_big(1e75) ^ 1.5 then
+			new_colour = G.C.CRY_EMBER
+		elseif level >= to_big(1e40) ^ 1.25 then
+			new_colour = G.C.CRY_AZURE
+		elseif level >= to_big(1e30) ^ 1.125 then
+			new_colour = G.C.CRY_BLOSSOM
+		elseif level >= to_big(1e20) then
+			new_colour = G.C.CRY_EXOTIC
+		elseif level >= to_big(1e10) then
+			new_colour = G.C.EDITION
+		elseif level > to_big(7200) then
+			new_colour = G.C.DARK_EDITION
+		elseif level >= to_big(1) then
+			local lv_num = to_number(level)
+			local r, g, b = hsv(0.05 * lv_num, 0.05 * math.ceil(lv_num / 360), 1)
+			local r2, g2, b2 = hsv(0.05 * lv_num, 0.05 * math.ceil(lv_num / 360), 0.05 * math.ceil(lv_num / 360))
+			new_colour = {r, b, g, 1}
+			if not G.C.HAND_LEVELS['!' .. number_format(level)] then G.C.HAND_LEVELS['!' .. number_format(level)] = {r2, b2, g2, 1} end
+		end
+		G.C.HAND_LEVELS[number_format(level)] = new_colour
+	end
+	if #G.C.HAND_LEVELS > 1e4 and G.GAME then
+		local colours_still_in_use = {}
+		for k, v in pairs(G.GAME.hands) do
+			local str = number_format(to_big(v.level))
+			if G.C.HAND_LEVELS[str] then
+				colours_still_in_use[str] = true
+			end
+		end
+		for k, v in pairs(G.GAME.ranks) do
+			local str = number_format(to_big(v.level))
+			if G.C.HAND_LEVELS[str] then
+				colours_still_in_use[str] = true
+			end
+		end
+		for k, v in pairs(G.GAME.suits) do
+			local str = number_format(to_big(v.level))
+			if G.C.HAND_LEVELS[str] then
+				colours_still_in_use[str] = true
+			end
+		end
+		for k, v in pairs(G.C.HAND_LEVELS) do
+			if not colours_still_in_use[k] and k ~= '0' and k ~= '1' and k ~= '2' and k ~= '3' and k ~= '4' and k ~= '5' and k ~= '6' and k ~= '7' then
+				G.C.HAND_LEVELS[k] = nil
+			end
+		end
+	end
+	return new_colour
+end
+
+
+
 function May.hiddencard(card)
 	if type(card) ~= 'table' then return false end
 	if not G.GAME then return false end
@@ -282,6 +446,8 @@ local random_editions = {
 }
 
 SMODS.Sound({key = 'blink', path = 'blink.ogg'})
+
+
 
 local card_draw_ref = Card.draw
 function Card:draw(layer)
@@ -755,7 +921,16 @@ local game_updateref = Game.update
 function Game:update(dt)
 	
 	game_updateref(self, dt)
-	
+	if G.GAME then
+		if G.GAME.modifiers then
+			if not G.GAME.modifiers.may_initialise_buffs then
+				G.GAME.modifiers.may_initialise_buffs = true
+				G.GAME.modifiers.cry_booster_packs = (G.GAME.modifiers.cry_booster_packs or 2) + May.config.shop_booster_pack_count_buff
+				change_shop_size(May.config.shop_size_buff)
+				SMODS.change_voucher_limit(May.config.shop_voucher_count_buff)
+			end
+		end
+	end
 	if G.GAME then
 		
 		May.john_active = #SMODS.find_card('j_may_john') > 0
@@ -999,11 +1174,22 @@ SMODS.Edition({
 	end
 })
 
+--fiiiiine jen ill do my unos in my global file :|
+
+
+
+
+
+
 --CONSUMABLES
 
 --CAPSULES YAY
 init_capsules = SMODS.load_file("other/capsules.lua")
 init_capsules()
+
+--UNOS YAY
+
+
 
 --OTHER CONSUMABLES YAY
 init_consumables = SMODS.load_file("other/consumables.lua")
